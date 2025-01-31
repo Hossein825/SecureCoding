@@ -1,6 +1,8 @@
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/stat.h>
+
+#define BUFSIZE 256
 
 // This program prints the size of a specified file in bytes
 
@@ -11,15 +13,20 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    // Check if the file exists and access its information
-    struct stat file_info;
-    if (stat(argv[1], &file_info) != 0) {
-        perror("Error accessing the file");
+    // Validate the length of the input to avoid buffer overflows
+    if (strlen(argv[1]) >= BUFSIZE - 10) {
+        fprintf(stderr, "Input file path is too long.\n");
         return -1;
     }
 
-    // Print the size of the file in bytes
-    printf("The size of the file is: %ld bytes\n", file_info.st_size);
+    char cmd[BUFSIZE] = "wc -c < ";
+    strcat(cmd, argv[1]); // Append the user input to the command
+
+    // Execute the system command
+    if (system(cmd) != 0) {
+        fprintf(stderr, "An error occurred while executing the command.\n");
+        return -1;
+    }
 
     return 0;
 }
