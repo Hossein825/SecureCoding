@@ -1,2 +1,2 @@
 all:
-	gcc -o main SClab2-Ccode.c
+	gcc -o main SClab2-Ccode-f.c
